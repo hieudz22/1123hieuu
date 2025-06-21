@@ -1,230 +1,86 @@
+(async () => {
+    const Admin = require('../app/Models/Admin');
+    const generateHash = require('../app/Helpers/Helpers').generateHash;
+    const HU = require('../app/Models/HU');
+    const BauCua = require('../app/Models/BauCua/BauCua_temp');
+    const ZeusPercent = require('../app/Models/Zeus/Zeus_percent');
 
-// Khởi tạo dữ liệu
+    // Khởi tạo Admin
+    const adminCount = await Admin.estimatedDocumentCount();
+    if (adminCount === 0) {
+        await Admin.create({
+            username: 'admin',
+            password: generateHash('123456'),
+            rights: 9,
+            regDate: new Date()
+        });
+    }
 
-// Admin
-let Admin        = require('../app/Models/Admin');
-let generateHash = require('../app/Helpers/Helpers').generateHash;
-let HU           = require('../app/Models/HU');
-let ZeusPercent  = require('../app/Models/Zeus/Zeus_percent');
+    // Khởi tạo Bầu Cua
+    const bauCuaData = await BauCua.findOne();
+    if (!bauCuaData) {
+        await BauCua.create({});
+    }
 
-Admin.estimatedDocumentCount().exec(function(err, total){
-	if (total == 0) {
-		Admin.create({'username': 'admin', 'password': generateHash('123456'), 'rights': 9, 'regDate': new Date()});
-	}
-});
+    // Tạo hàm tiện lợi
+    async function createHU(game, type, bet, min) {
+        const data = await HU.findOne({ game, type, red: true });
+        if (!data) {
+            await HU.create({ game, type, red: true, bet, min });
+        }
+    }
 
-// Bầu Cua
-let BauCua = require('../app/Models/BauCua/BauCua_temp');
-BauCua.findOne({}, {}, function(err, data){
-	if (!data) {
-		BauCua.create({});
-	}
-});
+    // Mini Poker
+    await createHU('minipoker', 100, 500000, 500000);
+    await createHU('minipoker', 1000, 5000000, 5000000);
+    await createHU('minipoker', 10000, 50000000, 50000000);
 
+    // Big Babol
+    await createHU('bigbabol', 100, 500000, 500000);
+    await createHU('bigbabol', 1000, 5000000, 5000000);
+    await createHU('bigbabol', 10000, 50000000, 50000000);
 
-// thiết lập Hũ Mini Poker
-HU.findOne({game:'minipoker', type:100, red: true}, {}, function(err, data){
-	if (!data) {
-		HU.create({'game':'minipoker', 'type': 100, red: true, 'bet': 500000, 'min': 500000});
-	}
-})
+    // Vương Quốc Red
+    await createHU('vuongquocred', 100, 500000, 500000);
+    await createHU('vuongquocred', 1000, 5000000, 5000000);
+    await createHU('vuongquocred', 10000, 50000000, 50000000);
 
-HU.findOne({game:'minipoker', type:1000, red: true}, {}, function(err, data){
-	if (!data) {
-		HU.create({'game':'minipoker', 'type': 1000, red: true, 'bet': 5000000, 'min': 5000000});
-	}
-})
+    // Mini 3 Cây
+    await createHU('mini3cay', 100, 250000, 250000);
+    await createHU('mini3cay', 1000, 2500000, 2500000);
+    await createHU('mini3cay', 10000, 25000000, 25000000);
 
-HU.findOne({game:'minipoker', type:10000, red: true}, {}, function(err, data){
-	if (!data) {
-		HU.create({'game':'minipoker', 'type': 10000, red: true, 'bet': 50000000, 'min': 50000000});
-	}
-})
+    // Cao Thấp
+    await createHU('caothap', 1000, 7000, 7000);
+    await createHU('caothap', 10000, 70000, 70000);
+    await createHU('caothap', 50000, 350000, 350000);
+    await createHU('caothap', 100000, 700000, 700000);
+    await createHU('caothap', 500000, 3500000, 3500000);
 
+    // AngryBirds
+    await createHU('arb', 100, 500000, 500000);
+    await createHU('arb', 1000, 5000000, 5000000);
+    await createHU('arb', 10000, 50000000, 50000000);
 
-// thiết lập Hũ BigBabol
-HU.findOne({game:'bigbabol', type:100, red: true}, {}, function(err, data){
-	if (!data) {
-		HU.create({'game':'bigbabol', 'type': 100, red: true, 'bet': 500000, 'min': 500000});
-	}
-})
+    // Candy
+    await createHU('candy', 100, 500000, 500000);
+    await createHU('candy', 1000, 5000000, 5000000);
+    await createHU('candy', 10000, 50000000, 50000000);
 
-HU.findOne({game:'bigbabol', type:1000, red: true}, {}, function(err, data){
-	if (!data) {
-		HU.create({'game':'bigbabol', 'type': 1000, red: true, 'bet': 5000000, 'min': 5000000});
-	}
-})
+    // Long Lân
+    await createHU('long', 100, 500000, 500000);
+    await createHU('long', 1000, 5000000, 5000000);
+    await createHU('long', 10000, 50000000, 50000000);
 
-HU.findOne({game:'bigbabol', type:10000, red: true}, {}, function(err, data){
-	if (!data) {
-		HU.create({'game':'bigbabol', 'type': 10000, red: true, 'bet': 50000000, 'min': 50000000});
-	}
-})
+    // Zeus
+    await createHU('Zeus', 100, 500000, 500000);
+    await createHU('Zeus', 1000, 5000000, 5000000);
+    await createHU('Zeus', 10000, 50000000, 50000000);
 
+    // MegaJackpot
+    await createHU('megaj', 100, 5000000, 5000000);
+    await createHU('megaj', 1000, 50000000, 50000000);
+    await createHU('megaj', 10000, 200000000, 200000000);
 
-// thiết lập Hũ Vương Quốc Red
-HU.findOne({game:'vuongquocred', type:100, red: true}, {}, function(err, data){
-	if (!data) {
-		HU.create({'game':'vuongquocred', 'type': 100, red: true, 'bet': 500000, 'min': 500000});
-	}
-})
-
-HU.findOne({game:'vuongquocred', type:1000, red: true}, {}, function(err, data){
-	if (!data) {
-		HU.create({'game':'vuongquocred', 'type': 1000, red: true, 'bet': 5000000, 'min': 5000000});
-	}
-})
-
-HU.findOne({game:'vuongquocred', type:10000, red: true}, {}, function(err, data){
-	if (!data) {
-		HU.create({'game':'vuongquocred', 'type': 10000, red: true, 'bet': 50000000, 'min': 50000000});
-	}
-})
-
-
-// thiết lập Hũ Mini 3Cây
-HU.findOne({game:'mini3cay', type:100, red: true}, {}, function(err, data){
-	if (!data) {
-		HU.create({'game':'mini3cay', 'type': 100, red: true, 'bet': 250000, 'min': 250000});
-	}
-})
-
-HU.findOne({game:'mini3cay', type:1000, red: true}, {}, function(err, data){
-	if (!data) {
-		HU.create({'game':'mini3cay', 'type': 1000, red: true, 'bet': 2500000, 'min': 2500000});
-	}
-})
-
-HU.findOne({game:'mini3cay', type:10000, red: true}, {}, function(err, data){
-	if (!data) {
-		HU.create({'game':'mini3cay', 'type': 10000, red: true, 'bet': 25000000, 'min': 25000000});
-	}
-})
-
-
-// thiết lập Hũ Cao Thấp
-HU.findOne({game:'caothap', type:1000, red: true}, {}, function(err, data){
-	if (!data) {
-		HU.create({'game':'caothap', 'type': 1000, red: true, 'bet': 7000, 'min': 7000});
-	}
-})
-
-HU.findOne({game:'caothap', type:10000, red: true}, {}, function(err, data){
-	if (!data) {
-		HU.create({'game':'caothap', 'type': 10000, red: true, 'bet': 70000, 'min': 70000});
-	}
-})
-
-HU.findOne({game:'caothap', type:50000, red: true}, {}, function(err, data){
-	if (!data) {
-		HU.create({'game':'caothap', 'type': 50000, red: true, 'bet': 350000, 'min': 350000});
-	}
-})
-
-HU.findOne({game:'caothap', type:100000, red: true}, {}, function(err, data){
-	if (!data) {
-		HU.create({'game':'caothap', 'type': 100000, red: true, 'bet': 700000, 'min': 700000});
-	}
-})
-
-HU.findOne({game:'caothap', type:500000, red: true}, {}, function(err, data){
-	if (!data) {
-		HU.create({'game':'caothap', 'type': 500000, red: true, 'bet': 3500000, 'min': 3500000});
-	}
-})
-
-// thiết lập Hũ AngryBirds
-HU.findOne({game:'arb', type:100, red: true}, {}, function(err, data){
-	if (!data) {
-		HU.create({'game':'arb', 'type': 100, red: true, 'bet': 500000, 'min': 500000});
-	}
-})
-
-HU.findOne({game:'arb', type:1000, red: true}, {}, function(err, data){
-	if (!data) {
-		HU.create({'game':'arb', 'type': 1000, red: true, 'bet': 5000000, 'min': 5000000});
-	}
-})
-
-HU.findOne({game:'arb', type:10000, red: true}, {}, function(err, data){
-	if (!data) {
-		HU.create({'game':'arb', 'type': 10000, red: true, 'bet': 50000000, 'min': 50000000});
-	}
-})
-
-
-// thiết lập Hũ Candy
-HU.findOne({game:'candy', type:100, red: true}, {}, function(err, data){
-	if (!data) {
-		HU.create({'game':'candy', 'type': 100, red: true, 'bet': 500000, 'min': 500000});
-	}
-})
-
-HU.findOne({game:'candy', type:1000, red: true}, {}, function(err, data){
-	if (!data) {
-		HU.create({'game':'candy', 'type': 1000, red: true, 'bet': 5000000, 'min': 5000000});
-	}
-})
-
-HU.findOne({game:'candy', type:10000, red: true}, {}, function(err, data){
-	if (!data) {
-		HU.create({'game':'candy', 'type': 10000, red: true, 'bet': 50000000, 'min': 50000000});
-	}
-})
-
-// thiết lập Hũ Long Lân
-HU.findOne({game:'long', type:100, red: true}, {}, function(err, data){
-	if (!data) {
-		HU.create({'game':'long', 'type': 100, red: true, 'bet': 500000, 'min': 500000});
-	}
-})
-
-HU.findOne({game:'long', type:1000, red: true}, {}, function(err, data){
-	if (!data) {
-		HU.create({'game':'long', 'type': 1000, red: true, 'bet': 5000000, 'min': 5000000});
-	}
-})
-
-HU.findOne({game:'long', type:10000, red: true}, {}, function(err, data){
-	if (!data) {
-		HU.create({'game':'long', 'type': 10000, red: true, 'bet': 50000000, 'min': 50000000});
-	}
-})
-
-// thiết lập Hũ Zeus
-HU.findOne({game:'Zeus', type:100, red: true}, {}, function(err, data){
-	if (!data) {
-		HU.create({'game':'Zeus', 'type': 100, red: true, 'bet': 500000, 'min': 500000});
-	}
-})
-
-HU.findOne({game:'Zeus', type:1000, red: true}, {}, function(err, data){
-	if (!data) {
-		HU.create({'game':'Zeus', 'type': 1000, red: true, 'bet': 5000000, 'min': 5000000});
-	}
-})
-
-HU.findOne({game:'Zeus', type:10000, red: true}, {}, function(err, data){
-	if (!data) {
-		HU.create({'game':'Zeus', 'type': 10000, red: true, 'bet': 50000000, 'min': 50000000});
-	}
-})
-
-// thiết lập Hũ MegaJackpot
-HU.findOne({game:'megaj', type:100, red: true}, {}, function(err, data){
-	if (!data) {
-		HU.create({'game':'megaj', 'type': 100, red: true, 'bet': 5000000, 'min': 5000000});
-	}
-})
-
-HU.findOne({game:'megaj', type:1000, red: true}, {}, function(err, data){
-	if (!data) {
-		HU.create({'game':'megaj', 'type': 1000, red: true, 'bet': 50000000, 'min': 50000000});
-	}
-})
-
-HU.findOne({game:'megaj', type:10000, red: true}, {}, function(err, data){
-	if (!data) {
-		HU.create({'game':'megaj', 'type': 10000, red: true, 'bet': 200000000, 'min': 200000000});
-	}
-})
+    console.log("✅ Dữ liệu khởi tạo thành công");
+})();
