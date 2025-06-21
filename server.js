@@ -6,7 +6,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
-require('mongoose-long')(mongoose); // INT 64bit
 
 // Load SSL (chỉ dùng nếu bạn thực sự cần https local)
 const privateKey = fs.readFileSync('./ssl/b86club.key', 'utf8');
