@@ -1,4 +1,8 @@
 {
+	"engines": {
+  "node": "16.x"
+}
+
 	"name": "RedVip",
 	"version": "1.17.02",
 	"description": "Server game By MrT98 (Red T)",
